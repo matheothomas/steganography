@@ -96,14 +96,11 @@ void decodePNG(char *filename, char *buffer){
 		}
 	}
 
-
 	printf("buffer : %s\n", buffer);
-
 
 	png_destroy_read_struct(&png_ptr, NULL, NULL);
 	fclose(f);
 }
-
 
 char *strToBin(char *s, char *buff){
 	int n = strlen(s);
