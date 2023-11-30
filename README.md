@@ -4,11 +4,11 @@ Steganography is a small C project aiming to hide a message in a `.png` image, a
 
 ## Principle
 The program can  :
-- hide a message in a given `.png` image.
-- recover a message hidden in a given `.png` image.
+- Hide a message in a given `.png` image - generates a `output.png` in the `res/` folder.
+- Recover a message hidden in a given `.png` image.
 
 
-## How to use
+## Installation
 Clone the repository :
 ```bash
 git clone https://github.com/matheothomas/steganography
@@ -23,10 +23,13 @@ Compile the code :
 ```bash
 make
 ```
+## How to use
 
 Execute the program :
 ```bash
 ./main
 ```
 
+- With `0` you can provide an image (`tux.png` is available the `res/` folder) and then enter some text.
 
+- With `1` you can provide a coded image to decode its hidden message.
