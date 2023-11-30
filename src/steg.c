@@ -9,6 +9,8 @@
 #include <png.h>
 #include "steg.h"
 
+#define SIZE 1000
+
 png_infop info_ptr;
 png_bytepp row_pointers;
 
@@ -42,7 +44,7 @@ void writePNG(char *filename, char *buffer){
 			png_bytep px = &(row[j*4]);
 			for(int k = 0; k < 3; k++){
 
-				if(count < 255){
+				if(count < SIZE){
 					if(px[k]%2 != buffer[count]%2){
 						if(px[k] == 255){
 							px[k]--;
@@ -79,7 +81,7 @@ void decodePNG(char *filename, char *buffer){
 		for(int j = 0; j < w; j++){
 			png_bytep px = &(row[j*4]);
 			for(int k = 0; k < 3; k++){
-				if(count < 255){
+				if(count < SIZE){
 					if(px[k]%2 == 0){
 						buffer[count] = '0';
 					} else {
@@ -112,7 +114,7 @@ char *binToStr(char *buff, char *s){
 		for(int j = 0; j < 8; j++){
 			temp[j] = buff[8*i + j];
 		}
-		sprintf(&s[i], "%c", strtol(temp, 0, 2));
+		sprintf(&s[i], "%c", (char)strtol(temp, 0, 2));
 	}
 	return s;
 }
@@ -122,14 +124,14 @@ int main(void){
 	int choice = 2;
 	scanf("%d%*c", &choice);
 	if(choice == 0){
-		char *filename = (char *)malloc(255*sizeof(char));
+		char *filename = (char *)malloc(SIZE*sizeof(char));
 		printf("Enter name of image : ");
 		scanf("%s", filename);
 
-		char *msg = (char *)malloc(255*sizeof(char));
+		char *msg = (char *)malloc(SIZE*sizeof(char));
 		printf("Enter message : ");
 		fflush(stdin);
-		scanf("%255[^\n]", msg);
+		scanf("%1000[^\n]", msg);
 
 		char *buffer = (char *)malloc(strlen(msg)*sizeof(char));
 		buffer = strToBin(msg, buffer);
@@ -138,11 +140,11 @@ int main(void){
 		writePNG("../res/output.png", buffer);
 
 	} else if(choice == 1){
-		char *filename = (char *)malloc(255*sizeof(char));
+		char *filename = (char *)malloc(SIZE*sizeof(char));
 		printf("Enter name of image : ");
 		scanf("%s", filename);
 
-		char buffer[255];
+		char buffer[SIZE];
 		decodePNG(filename, buffer);
 
 		char *msg = (char *)malloc((strlen(buffer)+1)*sizeof(char));
