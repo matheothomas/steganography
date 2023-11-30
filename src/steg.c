@@ -26,7 +26,7 @@ void readPNG(char *filename){
 }
 
 
-void writePNG(char *filename){
+void writePNG(char *filename, char *buffer){
 	FILE *f = fopen(filename, "wb");
 
 	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
@@ -36,26 +36,23 @@ void writePNG(char *filename){
 	int w = png_get_image_width(png_ptr, info_ptr);
 	int h = png_get_image_height(png_ptr, info_ptr);
 
+	int count = 0;
 	for(int i = 0; i < h; i++){
 		png_bytep row = row_pointers[i];
 		for(int j = 0; j < w; j++){
 			png_bytep px = &(row[j*4]);
-
 			for(int k = 0; k < 3; k++){
-				if(px[k] == 255){
-					px[k]--;
 
-				} else {
-					px[k]++;
+				if(count < 255){
+					if(px[k]%2 != buffer[count]%2){
+						if(px[k] == 255){
+							px[k]--;
+						} else {
+							px[k]++;
+						}
+					}
 				}
-				// printf("%d ", px[k]);
-
-				/*
-				   if(px[k]%2 == 0){
-				   printf("0");
-				   } else {
-				   printf("1");
-				   }*/
+				count++;
 			}
 		}
 	}
@@ -84,11 +81,11 @@ void decodePNG(char *filename, char *buffer){
 		for(int j = 0; j < w; j++){
 			png_bytep px = &(row[j*4]);
 			for(int k = 0; k < 3; k++){
-				if(count < 10){
+				if(count < 255){
 					if(px[k]%2 == 0){
-						buffer[count] = 0;
+						buffer[count] = '0';
 					} else {
-						buffer[count] = 1;
+						buffer[count] = '1';
 					}
 				}
 				count++;
@@ -96,15 +93,12 @@ void decodePNG(char *filename, char *buffer){
 		}
 	}
 
-	printf("buffer : %s\n", buffer);
-
 	png_destroy_read_struct(&png_ptr, NULL, NULL);
 	fclose(f);
 }
 
 char *strToBin(char *s, char *buff){
 	int n = strlen(s);
-	//char buff[8*n+1];
 	for(int i = 0; i < n; i++){
 		for(int j = 7; j >= 0; j--){
 			sprintf(&buff[8*i + 7-j], "%d", (s[i] >> j) & 1 ? 1 : 0);
@@ -127,7 +121,7 @@ char *binToStr(char *buff, char *s){
 }
 
 int main(void){
-	printf("Steganography program.\n\nChoose an option :\n 0-Encode text\n 1-Decode image\n");
+	printf("Steganography program.\n\nChoose an option :\n 0-Encode text\n 1-Decode image\n ");
 	int choice = 2;
 	scanf("%d%*c", &choice);
 	if(choice == 0){
@@ -137,10 +131,14 @@ int main(void){
 
 		char *msg = (char *)malloc(255*sizeof(char));
 		printf("Enter message : ");
-		scanf("%s", msg);
+		fflush(stdin);
+		scanf("%255[^\n]", msg);
+
+		char *buffer = (char *)malloc(strlen(msg)*sizeof(char));
+		buffer = strToBin(msg, buffer);
 
 		readPNG(filename);
-		writePNG("../res/output.png");
+		writePNG("../res/output.png", buffer);
 
 	} else if(choice == 1){
 		char *filename = (char *)malloc(255*sizeof(char));
@@ -149,21 +147,16 @@ int main(void){
 
 		char buffer[255];
 		decodePNG(filename, buffer);
-		printf("Buffer : %s\n", buffer);
+		printf("buffer : %s\n", buffer);
+
+		char *msg = (char *)malloc((strlen(buffer)+1)*sizeof(char));
+		msg = binToStr(buffer, msg);
+		printf("msg : %s\n", msg);
+
 	} else {
 		printf("Wrong value, exiting...\n");
 	}
-	/*
-	   char *s = "Hello\0";
 
-	   char *buff = (char *)malloc(strlen(s)*sizeof(char));
-	   buff = strToBin(s, buff);
-	   printf("buff : %s\n", buff);
-
-	   char *s2 = (char *)malloc((strlen(buff)+1)*sizeof(char));
-	   s2 = binToStr(buff, s2);
-	   printf("s2 : %s\n", s2);
-	   */
 	return 0;
 }
 
