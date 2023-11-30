@@ -20,8 +20,8 @@ Steganography is a small C project aiming to hide a message in a `.png` image, a
 - Binary (ASCII) : `0100100001101001`
 - For the first pixel, if its RGB values are `63-50-200`, in binary it is `00111111-00110010-11001000`.
 - To match the beginning of the message, we change the least significant bit :
-    - `00111111 -> 0011111**0**`
-    - `00110010 -> 0011001**1**`
+    - `00111111 -> 00111110`
+    - `00110010 -> 00110011`
     - `11001000 -> 11001000`
 
 
