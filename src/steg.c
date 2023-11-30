@@ -25,7 +25,6 @@ void readPNG(char *filename){
 	fclose(f);
 }
 
-
 void writePNG(char *filename, char *buffer){
 	FILE *f = fopen(filename, "wb");
 
@@ -56,7 +55,6 @@ void writePNG(char *filename, char *buffer){
 			}
 		}
 	}
-
 	png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
 
 	png_destroy_write_struct(&png_ptr, &info_ptr);
@@ -116,7 +114,6 @@ char *binToStr(char *buff, char *s){
 		}
 		sprintf(&s[i], "%c", strtol(temp, 0, 2));
 	}
-
 	return s;
 }
 
@@ -147,7 +144,6 @@ int main(void){
 
 		char buffer[255];
 		decodePNG(filename, buffer);
-		printf("buffer : %s\n", buffer);
 
 		char *msg = (char *)malloc((strlen(buffer)+1)*sizeof(char));
 		msg = binToStr(buffer, msg);
