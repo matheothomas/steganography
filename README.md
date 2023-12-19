@@ -33,6 +33,9 @@ The program can  :
 - Hide a message in a given `.png` image - generates a `output.png` in the `res/` folder.
 - Recover a message hidden in a given `.png` image.
 
+#### Disclaimer
+Due to some compression, the program will not work if the image is sent via a service that compresses files if it has not been zipped beforehand.
+
 ### Installation
 Clone the repository :
 ```bash
